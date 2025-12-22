@@ -46,7 +46,7 @@ if DEVELOPER_MODE:
     warnings.simplefilter('default')
 
 
-PYFUSE3_VERSION = '3.4.0'
+PYFUSE3_VERSION = '3.4.1'
 
 def main():
 
