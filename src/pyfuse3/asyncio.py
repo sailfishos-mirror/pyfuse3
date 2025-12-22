@@ -47,7 +47,7 @@ async def wait_readable(fd: FileHandleT) -> None:
     future: 'asyncio.Future[Any]' = asyncio.Future()
     _read_futures[fd].add(future)
     try:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         loop.add_reader(fd, future.set_result, None)
         future.add_done_callback(lambda f: loop.remove_reader(fd))
         await future
