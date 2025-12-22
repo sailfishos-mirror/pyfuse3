@@ -58,7 +58,7 @@ def testfs(tmpdir):
             wait_for_mount(mount_process, mnt_dir)
             yield (mnt_dir, cross_process)
         except:
-            cleanup(mnt_process, mnt_dir)
+            cleanup(mount_process, mnt_dir)
             raise
         else:
             umount(mount_process, mnt_dir)

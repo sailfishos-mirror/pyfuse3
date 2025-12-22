@@ -187,7 +187,7 @@ cdef class _WorkerData:
     cdef int active_readers
 
     def __init__(self):
-        self.read_lock = trio.Lock()
+        self.read_lock = None
         self.active_readers = 0
 
     cdef get_name(self):
@@ -204,6 +204,9 @@ async def _wait_fuse_readable():
     Return True if the fd is readable, or False if the main loop
     should terminate.
     '''
+
+    if worker_data.read_lock is None:
+        worker_data.read_lock = trio.Lock()
 
     #name = trio.lowlevel.current_task().name
     worker_data.active_readers += 1

@@ -4,6 +4,23 @@
 
 .. currentmodule:: pyfuse3
 
+Release 3.4.1 (2025-12-22)
+==========================
+
+* Cythonized with latest Cython 3.2.3.
+
+* CI: also test on Python 3.14, on Ubuntu 24.04.
+
+* asyncio:
+
+  - use .run and .get_running_loop, #106.
+  - replace deprecated Future() with create_future; fix lazy trio.Lock init.
+
+* use SPDX license identifier, #107
+
+* fix LICENSE text: LGPL v2.1, #102
+
+
 Release 3.4.0 (2024-08-28)
 ==========================
 

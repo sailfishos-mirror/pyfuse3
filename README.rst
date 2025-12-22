@@ -10,6 +10,7 @@ Warning - no longer developed!
 pyfuse3 is no longer actively developed and just receiving community-contributed
 maintenance to keep it alive for some time.
 
+A good alternative for some use cases might be `mfusepy <https://github.com/mxmlnkn/mfusepy>`_.
 
 The pyfuse3 Module
 ==================

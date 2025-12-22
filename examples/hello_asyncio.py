@@ -155,14 +155,11 @@ def main():
     if options.debug_fuse:
         fuse_options.add('debug')
     pyfuse3.init(testfs, options.mountpoint, fuse_options)
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(pyfuse3.main())
+        asyncio.run(pyfuse3.main())
     except:
         pyfuse3.close(unmount=False)
         raise
-    finally:
-        loop.close()
 
     pyfuse3.close()
 

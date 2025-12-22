@@ -14,8 +14,8 @@ Steps for Releasing a New Version
  * `./setup.py build_ext --inplace`
  * `./setup.py sdist`
  * Git commit / tag & sign
- * `gpg --detach-sign --local-user "Thomas Waldmann" --armor --output dist/<file>.tar.gz.asc dist/<file>.tar.gz`
- * `twine upload dist/<file>.tar.gz`
+ * `util/sdist-sign 1.2.3`
+ * `util/upload-pypi 1.2.3`
  * Send announcement to mailing list
   * Get contributors: `git log --pretty="format:%an <%aE>" "${PREV_TAG}..${TAG}" | sort -u`
 
