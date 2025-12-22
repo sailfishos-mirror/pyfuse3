@@ -44,10 +44,10 @@ _read_futures = collections.defaultdict(set)
 
 
 async def wait_readable(fd: FileHandleT) -> None:
-    future: 'asyncio.Future[Any]' = asyncio.Future()
+    loop = asyncio.get_running_loop()
+    future: 'asyncio.Future[Any]' = loop.create_future()
     _read_futures[fd].add(future)
     try:
-        loop = asyncio.get_running_loop()
         loop.add_reader(fd, future.set_result, None)
         future.add_done_callback(lambda f: loop.remove_reader(fd))
         await future
