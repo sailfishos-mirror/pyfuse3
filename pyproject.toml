@@ -1,10 +1,53 @@
 [build-system]
-requires = ["setuptools >= 78.1.1"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=78.1.1", "setuptools_scm>=8.0", "Cython"]
+build-backend = "build_backend"
+backend-path = ["util"]
 
-[tool.mypy]
-mypy_path = ["$MYPY_CONFIG_FILE_DIR/src"]
-packages = ["pyfuse3"]
-modules = ["_pyfuse3"]
-namespace_packages = false
-strict = true
+[project]
+name = "pyfuse3"
+dynamic = ["version"]
+description = "Python 3 bindings for libfuse 3 with async I/O support"
+readme = "README.rst"
+requires-python = ">=3.10"
+license = "LGPL-2.1-or-later"
+authors = [
+    {name = "Nikolaus Rath", email = "Nikolaus@rath.org"}
+]
+keywords = ["FUSE", "python"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Filesystems",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: BSD :: FreeBSD",
+    "Typing :: Typed",
+]
+dependencies = [
+    "trio >= 0.15",
+]
+
+[project.urls]
+Homepage = "https://github.com/libfuse/pyfuse3"
+
+[dependency-groups]
+dev = [
+    "pytest >= 3.4.0",
+    "pytest-trio",
+    "sphinx",
+    "twine",
+]
+
+[tool.setuptools_scm]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pyfuse3 = ["py.typed"]
+

@@ -7,6 +7,9 @@ graft rst
 graft util
 graft test
 prune test/.cache
+prune .github
 exclude MANIFEST.in
+exclude .git*
+exclude .readthedocs.yaml
 recursive-include src *.pyx *.pyi *.py *.pxi *.pxd *.c *.h
 global-exclude *.pyc

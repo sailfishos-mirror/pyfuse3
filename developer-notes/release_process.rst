@@ -1,23 +1,17 @@
 Steps for Releasing a New Version
 ---------------------------------
 
- * pip install twine sphinx
- * pip install -U Cython  # important: use latest/best Cython!
- * Bump version in `setup.py` and version/release in `rst/conf.py`
- * Add release date to `Changes.rst`
- * `./setup.py build_cython`
- * `./setup.py sdist`
- * Extract tarball in temporary directory,
-    * `python3 setup.py build_ext --inplace && python3 -m pytest test`
-    * Run tests under valgrind. Build python `--with-valgrind --with-pydebug`, then `valgrind --trace-children=yes "--trace-children-skip=*mount*" python-dbg -m pytest test/`
- * `sphinx-build -b html rst doc/html`
- * `./setup.py build_ext --inplace`
- * `./setup.py sdist`
- * Git commit / tag & sign
- * `util/sdist-sign 1.2.3`
- * `util/upload-pypi 1.2.3`
+ * `export NEWVER=vXX.YY.Z`
+ * Add release date and version to `Changes.rst`
+ * `git commit --all -m "Released $NEWVER"`
+ * `git tag v$NEWVER`
+ * `uv sync --locked` (also installs twine, sphinx, Cython)
+ * `uv run sphinx-build -b html rst doc/html`
+ * `uv build --sdist` (or `python3 -m build --sdist`)
+ * `util/sdist-sign $NEWVER`
+ * `util/upload-pypi $NEWVER`
  * Send announcement to mailing list
-  * Get contributors: `git log --pretty="format:%an <%aE>" "${PREV_TAG}..${TAG}" | sort -u`
+  * Get contributors: `git log --pretty="format:%an <%aE>" "${PREV_TAG}..v${NEWVER}" | sort -u`
 
 
 Announcement template:

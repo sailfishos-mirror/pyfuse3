@@ -51,10 +51,6 @@ cdef extern from "<linux/fs.h>" nogil:
 cdef extern from "Python.h" nogil:
     int PY_SSIZE_T_MAX
 
-# Actually passed as -D to cc (and defined in setup.py)
-cdef extern from *:
-    char* PYFUSE3_VERSION
-
 ################
 # PYTHON IMPORTS
 ################
@@ -93,7 +89,7 @@ cdef object py_retval
 cdef object _notify_queue = None
 
 ROOT_INODE = FUSE_ROOT_ID
-__version__ = PYFUSE3_VERSION.decode('utf-8')
+__version__ = _pyfuse3.__version__
 
 _NANOS_PER_SEC = 1000000000
 

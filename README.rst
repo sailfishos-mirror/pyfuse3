@@ -23,7 +23,7 @@ Getting Help
 
 Please report any bugs on the `issue tracker`_. For discussion and
 questions, please use the general `FUSE mailing list`_ or 
-`GitHub Discussions <https://github.com/libfuse/pyfuse3/discussions>`
+`GitHub Discussions <https://github.com/libfuse/pyfuse3/discussions>`_.
 
 Development Status
 ------------------
@@ -47,7 +47,7 @@ The pyfuse3 source code is available on GitHub_.
 
 
 .. __: https://pyfuse3.readthedocs.io/
-.. _libfuse 3: http://github.com/libfuse/libfuse
+.. _`libfuse 3`: http://github.com/libfuse/libfuse
 .. _FUSE mailing list: https://lists.sourceforge.net/lists/listinfo/fuse-devel
 .. _issue tracker: https://github.com/libfuse/pyfuse3/issues
 .. _mailing list archive: http://dir.gmane.org/gmane.comp.file-systems.fuse.devel

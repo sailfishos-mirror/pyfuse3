@@ -15,6 +15,13 @@ import logging
 from typing import (TYPE_CHECKING, Any, Callable, NewType, Optional, Sequence,
                     Tuple)
 
+# Version information
+try:
+    from importlib.metadata import version
+    __version__ = version('pyfuse3')
+except (ImportError, PackageNotFoundError):
+    __version__ = 'unknown'
+
 # These types are specific instances of builtin types:
 FileHandleT = NewType("FileHandleT", int)
 FileNameT = NewType("FileNameT", bytes)
