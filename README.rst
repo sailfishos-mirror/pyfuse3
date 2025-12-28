@@ -1,16 +1,8 @@
 ..
   NOTE: We cannot use sophisticated ReST syntax (like
   e.g. :file:`foo`) here because this isn't rendered correctly
-  by PyPi and/or BitBucket.
+  by PyPi.
 
-
-Warning - no longer developed!
-==============================
-
-pyfuse3 is no longer actively developed and just receiving community-contributed
-maintenance to keep it alive for some time.
-
-A good alternative for some use cases might be `mfusepy <https://github.com/mxmlnkn/mfusepy>`_.
 
 The pyfuse3 Module
 ==================
@@ -37,11 +29,16 @@ questions, please use the general `FUSE mailing list`_. A searchable
 Development Status
 ------------------
 
-pyfuse3 is in beta. Bugs are likely.
+pyfuse3 is stable when used with Trio. The current maintainers ensure that bugs
+are addressed and pyfuse3 continues to work with new Python and libfuse
+versions. There is no plan to add new features or other non-bugfix work.
+However, pull requests for new features or other improvements may be accepted.
 
-pyfuse3 uses semantic versioning. This means backwards incompatible
-changes in the API will be reflected in an increase of the major
-version number.
+Using pyfuse3 with asyncio (rather than Trio) support is less well tested,
+there may be bugs, and some of them may not be easily fixable.
+
+If you need a synchronous (non async) implementation, `mfusepy <https://github.com/mxmlnkn/mfusepy>`_
+is a maintained alternative.
 
 
 Contributing
