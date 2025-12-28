@@ -1,6 +1,6 @@
 name: Test
 
-on: [push, pull_request]
+on: [push]
 
 env:
   FORCE_COLOR: 1
@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         cython-version: ["0.29", "3"]
