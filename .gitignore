@@ -5,6 +5,8 @@ doc/html/
 doc/doctrees/
 src/pyfuse3/__init__.c
 src/pyfuse3/__init__*.so
+src/*.so
+src/pyfuse3.c
 test/.cache/
 __pycache__
 test/.pytest_cache/
