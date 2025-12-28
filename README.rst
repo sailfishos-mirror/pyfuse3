@@ -22,9 +22,8 @@ Getting Help
 ------------
 
 Please report any bugs on the `issue tracker`_. For discussion and
-questions, please use the general `FUSE mailing list`_. A searchable
-`mailing list archive`_ is kindly provided by Gmane_.
-
+questions, please use the general `FUSE mailing list`_ or 
+`GitHub Discussions <https://github.com/libfuse/pyfuse3/discussions>`
 
 Development Status
 ------------------
