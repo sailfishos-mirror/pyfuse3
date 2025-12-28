@@ -4,6 +4,13 @@
 
 .. currentmodule:: pyfuse3
 
+Unreleased Changes
+==================
+
+* Removed the `pyfuse3_asyncio` module. This has been renamed to
+  `pyfuse3.asyncio` for quite some time.
+
+
 Release 3.4.1 (2025-12-22)
 ==========================
 

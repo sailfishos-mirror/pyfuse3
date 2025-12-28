@@ -5,10 +5,9 @@
 =================
 
 By default, pyfuse3 uses asynchronous I/O using Trio_ (and most of the
-documentation assumes that you are using Trio). If you'd rather use
-asyncio, import the *pyfuse3.asyncio* module (*pyfuse3_asyncio* in 3.3.0 and
-earlier) and call its *enable()* function before using *pyfuse3*.
-For example::
+documentation assumes that you are using Trio). If you'd rather use asyncio,
+import the *pyfuse3.asyncio* module  and call its *enable()* function before
+using *pyfuse3*. For example::
 
    import pyfuse3
    import pyfuse3.asyncio
