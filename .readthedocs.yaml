@@ -10,10 +10,6 @@ build:
     jobs:
         post_checkout:
             - git fetch --unshallow
-        pre_install:
-            - pip install -r requirements.d/rtd.txt
-            - python setup.py build_cython
-            - python setup.py build_ext --inplace
     apt_packages:
         - build-essential
         - pkg-config
