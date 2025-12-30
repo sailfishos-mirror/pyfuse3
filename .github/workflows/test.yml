@@ -17,7 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Retrieve some git history, which will hopefully include the last release tag
+          # and enable us to generate better version numbers.
+          fetch-depth: 256
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
