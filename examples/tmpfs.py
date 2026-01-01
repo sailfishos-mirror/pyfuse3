@@ -22,15 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
 import os
-import sys
-
-# If we are running from the pyfuse3 source directory, try
-# to load the module from there first.
-basedir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), '..'))
-if (os.path.exists(os.path.join(basedir, 'setup.py')) and
-    os.path.exists(os.path.join(basedir, 'src', 'pyfuse3', '__init__.pyx'))):
-    sys.path.insert(0, os.path.join(basedir, 'src'))
-
 import pyfuse3
 import errno
 import stat
