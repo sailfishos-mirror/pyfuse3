@@ -32,6 +32,7 @@ from util import cleanup, fuse_test_marker, umount, wait_for_mount
 
 pytestmark = fuse_test_marker()
 
+
 def get_mp():
     # We can't use forkserver because we have to make sure
     # that the server inherits the per-test stdout/stderr file
@@ -53,8 +54,7 @@ def testfs(tmpdir):
     mp = get_mp()
     with mp.Manager() as mgr:
         cross_process = mgr.Namespace()
-        mount_process = mp.Process(target=run_fs,
-                                   args=(mnt_dir, cross_process))
+        mount_process = mp.Process(target=run_fs, args=(mnt_dir, cross_process))
 
         mount_process.start()
         try:
@@ -65,6 +65,7 @@ def testfs(tmpdir):
             raise
         else:
             umount(mount_process, mnt_dir)
+
 
 def test_invalidate_entry(testfs):
     (mnt_dir, fs_state) = testfs
@@ -82,6 +83,7 @@ def test_invalidate_entry(testfs):
     os.stat(path)
     assert fs_state.lookup_called
 
+
 def test_invalidate_inode(testfs):
     (mnt_dir, fs_state) = testfs
     with open(os.path.join(mnt_dir, 'message'), 'r') as fh:
@@ -97,6 +99,7 @@ def test_invalidate_inode(testfs):
         assert fh.read() == 'hello world\n'
         assert fs_state.read_called
 
+
 def test_notify_store(testfs):
     (mnt_dir, fs_state) = testfs
     with open(os.path.join(mnt_dir, 'message'), 'r') as fh:
@@ -104,6 +107,7 @@ def test_notify_store(testfs):
         fs_state.read_called = False
         assert fh.read() == 'hello world\n'
         assert not fs_state.read_called
+
 
 def test_entry_timeout(testfs):
     (mnt_dir, fs_state) = testfs
@@ -116,10 +120,11 @@ def test_entry_timeout(testfs):
     os.stat(path)
     assert not fs_state.lookup_called
 
-    time.sleep(fs_state.entry_timeout*1.1)
+    time.sleep(fs_state.entry_timeout * 1.1)
     fs_state.lookup_called = False
     os.stat(path)
     assert fs_state.lookup_called
+
 
 def test_attr_timeout(testfs):
     (mnt_dir, fs_state) = testfs
@@ -131,18 +136,18 @@ def test_attr_timeout(testfs):
         os.fstat(fh.fileno())
         assert not fs_state.getattr_called
 
-        time.sleep(fs_state.attr_timeout*1.1)
+        time.sleep(fs_state.attr_timeout * 1.1)
         fs_state.getattr_called = False
         os.fstat(fh.fileno())
         assert fs_state.getattr_called
+
 
 def test_terminate(tmpdir):
     mnt_dir = str(tmpdir)
     mp = get_mp()
     with mp.Manager() as mgr:
         fs_state = mgr.Namespace()
-        mount_process = mp.Process(target=run_fs,
-                                   args=(mnt_dir, fs_state))
+        mount_process = mp.Process(target=run_fs, args=(mnt_dir, fs_state))
 
         mount_process.start()
         try:
@@ -159,7 +164,7 @@ class Fs(pyfuse3.Operations):
     def __init__(self, cross_process):
         super(Fs, self).__init__()
         self.hello_name = b"message"
-        self.hello_inode = pyfuse3.ROOT_INODE+1
+        self.hello_inode = pyfuse3.ROOT_INODE + 1
         self.hello_data = b"hello world\n"
         self.status = cross_process
         self.lookup_cnt = 0
@@ -172,15 +177,15 @@ class Fs(pyfuse3.Operations):
     async def getattr(self, inode, ctx=None):
         entry = pyfuse3.EntryAttributes()
         if inode == pyfuse3.ROOT_INODE:
-            entry.st_mode = (stat.S_IFDIR | 0o755)
+            entry.st_mode = stat.S_IFDIR | 0o755
             entry.st_size = 0
         elif inode == self.hello_inode:
-            entry.st_mode = (stat.S_IFREG | 0o644)
+            entry.st_mode = stat.S_IFREG | 0o644
             entry.st_size = len(self.hello_data)
         else:
             raise pyfuse3.FUSEError(errno.ENOENT)
 
-        stamp = int(1438467123.985654*1e9)
+        stamp = int(1438467123.985654 * 1e9)
         entry.st_atime_ns = stamp
         entry.st_ctime_ns = stamp
         entry.st_mtime_ns = stamp
@@ -194,7 +199,7 @@ class Fs(pyfuse3.Operations):
         return entry
 
     async def forget(self, inode_list):
-        for (inode, cnt) in inode_list:
+        for inode, cnt in inode_list:
             if inode == self.hello_inode:
                 self.lookup_cnt -= 1
                 assert self.lookup_cnt >= 0
@@ -217,7 +222,11 @@ class Fs(pyfuse3.Operations):
         assert fh == pyfuse3.ROOT_INODE
         if start_id == 0:
             pyfuse3.readdir_reply(
-                token, self.hello_name, await self.getattr(pyfuse3.InodeT(self.hello_inode)), 1)
+                token,
+                self.hello_name,
+                await self.getattr(pyfuse3.InodeT(self.hello_inode)),
+                1,
+            )
         return
 
     async def open(self, inode, flags, ctx):
@@ -230,7 +239,7 @@ class Fs(pyfuse3.Operations):
     async def read(self, fh, off, size):
         assert fh == self.hello_inode
         self.status.read_called = True
-        return self.hello_data[off:off+size]
+        return self.hello_data[off : off + size]
 
     async def setxattr(self, inode, name, value, ctx):
         if inode != pyfuse3.ROOT_INODE or name != b'command':
@@ -246,8 +255,7 @@ class Fs(pyfuse3.Operations):
             pyfuse3.invalidate_inode(pyfuse3.InodeT(self.hello_inode))
 
         elif value == b'store':
-            pyfuse3.notify_store(pyfuse3.InodeT(self.hello_inode), offset=0,
-                                 data=self.hello_data)
+            pyfuse3.notify_store(pyfuse3.InodeT(self.hello_inode), offset=0, data=self.hello_data)
 
         elif value == b'terminate':
             pyfuse3.terminate()
@@ -259,9 +267,10 @@ def run_fs(mountpoint, cross_process):
     # Logging (note that we run in a new process, so we can't
     # rely on direct log capture and instead print to stdout)
     root_logger = logging.getLogger()
-    formatter = logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s '
-                                  '%(funcName)s(%(threadName)s): %(message)s',
-                                   datefmt="%M:%S")
+    formatter = logging.Formatter(
+        '%(asctime)s.%(msecs)03d %(levelname)s %(funcName)s(%(threadName)s): %(message)s',
+        datefmt="%M:%S",
+    )
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(formatter)
