@@ -7,8 +7,10 @@ extension based on pkg-config output and platform detection.
 
 import os
 import subprocess
+
 from setuptools import Extension
-from setuptools.build_meta import *
+from setuptools.build_meta import *  # noqa: F403
+
 
 def pkg_config(pkg, cflags=True, ldflags=False, min_ver=None):
     """Frontend to pkg-config"""
@@ -87,9 +89,9 @@ def get_requires_for_build_wheel(config_settings=None):
 
 
 # Hook into the build process
-_orig_build_wheel = build_wheel
-_orig_build_editable = build_editable if 'build_editable' in dir() else None
-_orig_build_sdist = build_sdist
+_orig_build_wheel = build_wheel  # noqa: F405
+_orig_build_editable = build_editable if 'build_editable' in dir() else None  # noqa: F405
+_orig_build_sdist = build_sdist  # noqa: F405
 
 
 def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):

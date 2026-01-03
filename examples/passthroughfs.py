@@ -39,19 +39,21 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-import os
-import sys
-import pyfuse3
-from argparse import ArgumentParser
 import errno
+import faulthandler
 import logging
+import os
 import stat as stat_m
-from pyfuse3 import FUSEError
-from os import fsencode, fsdecode
+import sys
+from argparse import ArgumentParser
 from collections import defaultdict
+from os import fsdecode, fsencode
+
 import trio
 
-import faulthandler
+import pyfuse3
+from pyfuse3 import FUSEError
+
 faulthandler.enable()
 
 log = logging.getLogger(__name__)

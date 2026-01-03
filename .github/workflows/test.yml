@@ -35,6 +35,9 @@ jobs:
       - name: Build
         run: uv sync --locked
 
+      - name: Lint (ruff)
+        run: uv run ruff check
+
       - name: Run tests
         run: uv run pytest -v -rs test/
 

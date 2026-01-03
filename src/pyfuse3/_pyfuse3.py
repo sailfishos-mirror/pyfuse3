@@ -12,14 +12,14 @@ the terms of the GNU LGPL.
 import errno
 import functools
 import logging
-from typing import (TYPE_CHECKING, Any, Callable, NewType, Optional, Sequence,
-                    Tuple)
+from importlib.metadata import PackageNotFoundError, version as package_version
+from typing import TYPE_CHECKING, Any, Callable, NewType, Optional, Sequence, Tuple
 
 # Version information
 try:
-    from importlib.metadata import version
-    __version__ = version('pyfuse3')
-except (ImportError, PackageNotFoundError):
+    
+    __version__ = package_version('pyfuse3')
+except PackageNotFoundError:
     __version__ = 'unknown'
 
 # These types are specific instances of builtin types:
@@ -32,8 +32,15 @@ XAttrNameT = bytes
 
 if TYPE_CHECKING:
     # These types are defined elsewhere in the C code
-    from pyfuse3 import (EntryAttributes, FileInfo, FUSEError, ReaddirToken,
-                         RequestContext, SetattrFields, StatvfsData)
+    from pyfuse3 import (
+        EntryAttributes,
+        FileInfo,
+        FUSEError,
+        ReaddirToken,
+        RequestContext,
+        SetattrFields,
+        StatvfsData,
+    )
 else:
     # Will be injected by pyfuse3 extension module
     FUSEError = None

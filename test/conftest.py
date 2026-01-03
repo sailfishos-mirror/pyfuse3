@@ -1,9 +1,10 @@
-import sys
-import os.path
-import logging
-import pytest
-import time
 import gc
+import logging
+import os.path
+import sys
+import time
+
+import pytest
 
 # Enable output checks
 pytest_plugins = ('pytest_checklogs')

@@ -10,21 +10,24 @@ the terms of the GNU LGPL.
 '''
 
 if __name__ == '__main__':
-    import pytest
     import sys
+
+    import pytest
     sys.exit(pytest.main([__file__] + sys.argv[1:]))
 
-import subprocess
-import os
-import sys
-import pytest
-import stat
-import shutil
-import filecmp
 import errno
+import filecmp
+import os
+import shutil
+import stat
+import subprocess
+import sys
 from tempfile import NamedTemporaryFile
-from util import fuse_test_marker, wait_for_mount, umount, cleanup
+
+import pytest
+
 from pyfuse3 import _NANOS_PER_SEC
+from util import cleanup, fuse_test_marker, umount, wait_for_mount
 
 basename = os.path.join(os.path.dirname(__file__), '..')
 TEST_FILE = __file__

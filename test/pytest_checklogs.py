@@ -13,11 +13,12 @@ False positives can be registered via a new `reg_output` fixture (for messages
 to stdout/stderr), and a `assert_logs` function (for logging messages).
 '''
 
-import pytest
-import re
 import functools
 import logging
+import re
 from contextlib import contextmanager
+
+import pytest
 
 
 class CountMessagesHandler(logging.Handler):

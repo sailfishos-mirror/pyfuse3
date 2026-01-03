@@ -11,11 +11,13 @@ the terms of the GNU LGPL.
 
 import os
 import platform
-import pytest
 import shutil
 import stat
 import subprocess
 import time
+
+import pytest
+
 
 def fuse_test_marker():
     '''Return a pytest.marker that indicates FUSE availability

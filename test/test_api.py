@@ -10,17 +10,21 @@ the terms of the GNU LGPL.
 '''
 
 if __name__ == '__main__':
-    import pytest
     import sys
+
+    import pytest
     sys.exit(pytest.main([__file__] + sys.argv[1:]))
 
-import pyfuse3
-import tempfile
-import os
 import errno
-import pytest
+import os
+import tempfile
 from copy import copy
 from pickle import PicklingError
+
+import pytest
+
+import pyfuse3
+
 
 def test_listdir():
     # There is a race-condition here if /usr/bin is modified while the test

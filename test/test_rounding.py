@@ -10,12 +10,14 @@ the terms of the GNU LGPL.
 '''
 
 if __name__ == '__main__':
-    import pytest
     import sys
+
+    import pytest
     sys.exit(pytest.main([__file__] + sys.argv[1:]))
 
 import pyfuse3
 from pyfuse3 import _NANOS_PER_SEC
+
 
 def test_rounding():
     # Incorrect division previously resulted in rounding errors for

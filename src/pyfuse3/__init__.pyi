@@ -9,18 +9,21 @@ This file is part of pyfuse3. This work may be distributed under
 the terms of the GNU LGPL.
 '''
 
-# re-exports
+from typing import List, Literal, Mapping, Optional, Union
+
+from trio.lowlevel import TrioToken
+
+# Need to explicitly import with the same name to prevent mypy from
+# complaining that these types do not exist.
 from ._pyfuse3 import (
-    Operations as Operations,
     FileHandleT as FileHandleT,
     FileNameT as FileNameT,
     FlagT as FlagT,
     InodeT as InodeT,
     ModeT as ModeT,
-    XAttrNameT as XAttrNameT
+    Operations as Operations,
+    XAttrNameT as XAttrNameT,
 )
-from trio.lowlevel import TrioToken
-from typing import List, Literal, Mapping, Optional, Union
 
 ENOATTR: int
 RENAME_EXCHANGE: FlagT

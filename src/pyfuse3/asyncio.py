@@ -16,6 +16,7 @@ import sys
 from typing import Any, Callable, Iterable, Optional, Set, Type
 
 import pyfuse3
+
 from ._pyfuse3 import FileHandleT
 
 Lock = asyncio.Lock

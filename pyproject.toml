@@ -34,6 +34,7 @@ Homepage = "https://github.com/libfuse/pyfuse3"
 dev = [
     "pytest >= 3.4.0",
     "pytest-trio",
+    "ruff>=0.14.10",
     "sphinx",
     "twine",
 ]
@@ -49,3 +50,21 @@ where = ["src"]
 [tool.setuptools.package-data]
 pyfuse3 = ["py.typed"]
 
+[tool.ruff]
+extend-exclude = [
+    "developer-notes/",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+case-sensitive = false
+
+
+[tool.ruff.lint]
+ignore = [
+    "E731",  # Do not assign a lambda expression, use a def
+]
+extend-select = [
+  'RUF100',  # Warn about unused suppressions
+  'I', # Import ordering
+]

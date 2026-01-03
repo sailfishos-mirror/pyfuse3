@@ -21,17 +21,19 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-import os
-import pyfuse3
 import errno
-import stat
-from time import time
-import sqlite3
 import logging
-from collections import defaultdict
-from pyfuse3 import FUSEError
+import os
+import sqlite3
+import stat
 from argparse import ArgumentParser
+from collections import defaultdict
+from time import time
+
 import trio
+
+import pyfuse3
+from pyfuse3 import FUSEError
 
 try:
     import faulthandler

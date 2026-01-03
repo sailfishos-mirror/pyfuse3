@@ -9,23 +9,26 @@ This file is part of pyfuse3. This work may be distributed under
 the terms of the GNU LGPL.
 '''
 
-import pytest
 import sys
+
+import pytest
 
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__] + sys.argv[1:]))
 
-import pyfuse3
-from pyfuse3 import FUSEError
+import errno
+import logging
 import multiprocessing
 import os
-import errno
 import stat
-import time
-import logging
-import trio
 import threading
-from util import fuse_test_marker, wait_for_mount, umount, cleanup
+import time
+
+import trio
+
+import pyfuse3
+from pyfuse3 import FUSEError
+from util import cleanup, fuse_test_marker, umount, wait_for_mount
 
 pytestmark = fuse_test_marker()
 

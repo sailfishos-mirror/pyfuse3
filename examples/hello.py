@@ -22,13 +22,15 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-import os
-from argparse import ArgumentParser
-import stat
-import logging
 import errno
-import pyfuse3
+import logging
+import os
+import stat
+from argparse import ArgumentParser
+
 import trio
+
+import pyfuse3
 
 try:
     import faulthandler
