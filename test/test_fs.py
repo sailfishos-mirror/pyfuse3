@@ -206,18 +206,18 @@ class Fs(pyfuse3.Operations):
             raise pyfuse3.FUSEError(errno.ENOENT)
         self.lookup_cnt += 1
         self.status.lookup_called = True
-        return await self.getattr(self.hello_inode)
+        return await self.getattr(pyfuse3.InodeT(self.hello_inode))
 
     async def opendir(self, inode, ctx):
         if inode != pyfuse3.ROOT_INODE:
             raise pyfuse3.FUSEError(errno.ENOENT)
-        return inode
+        return pyfuse3.FileHandleT(inode)
 
     async def readdir(self, fh, start_id, token):
         assert fh == pyfuse3.ROOT_INODE
         if start_id == 0:
             pyfuse3.readdir_reply(
-                token, self.hello_name, await self.getattr(self.hello_inode), 1)
+                token, self.hello_name, await self.getattr(pyfuse3.InodeT(self.hello_inode)), 1)
         return
 
     async def open(self, inode, flags, ctx):
@@ -225,7 +225,7 @@ class Fs(pyfuse3.Operations):
             raise pyfuse3.FUSEError(errno.ENOENT)
         if flags & os.O_RDWR or flags & os.O_WRONLY:
             raise pyfuse3.FUSEError(errno.EACCES)
-        return pyfuse3.FileInfo(fh=inode)
+        return pyfuse3.FileInfo(fh=pyfuse3.FileHandleT(inode))
 
     async def read(self, fh, off, size):
         assert fh == self.hello_inode

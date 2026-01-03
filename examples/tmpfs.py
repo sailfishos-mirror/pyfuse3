@@ -124,9 +124,9 @@ class Operations(pyfuse3.Operations):
         return row
 
     async def lookup(self, parent_inode, name, ctx=None):
-        if name == '.':
+        if name == b'.':
             inode = parent_inode
-        elif name == '..':
+        elif name == b'..':
             inode = self.get_row("SELECT * FROM contents WHERE inode=?",
                                  (parent_inode,))['parent_inode']
         else:
@@ -136,7 +136,7 @@ class Operations(pyfuse3.Operations):
             except NoSuchRowError:
                 raise(pyfuse3.FUSEError(errno.ENOENT))
 
-        return await self.getattr(inode, ctx)
+        return await self.getattr(pyfuse3.InodeT(inode), ctx)
 
 
     async def getattr(self, inode, ctx=None):
@@ -170,19 +170,21 @@ class Operations(pyfuse3.Operations):
         return self.get_row('SELECT * FROM inodes WHERE id=?', (inode,))['target']
 
     async def opendir(self, inode, ctx):
-        return inode
+        return pyfuse3.FileHandleT(inode)
 
     async def readdir(self, fh, start_id, token):
         if start_id == 0:
-            start_id = -1
+            off = -1
+        else:
+            off = start_id
 
         cursor2 = self.db.cursor()
         cursor2.execute("SELECT * FROM contents WHERE parent_inode=? "
-                        'AND rowid > ? ORDER BY rowid', (fh, start_id))
+                        'AND rowid > ? ORDER BY rowid', (fh, off))
 
         for row in cursor2:
             pyfuse3.readdir_reply(
-                token, row['name'], await self.getattr(row['inode']), row['rowid'])
+                token, row['name'], await self.getattr(pyfuse3.InodeT(row['inode'])), row['rowid'])
 
     async def unlink(self, parent_inode, name, ctx):
         entry = await self.lookup(parent_inode, name)
@@ -200,13 +202,13 @@ class Operations(pyfuse3.Operations):
 
         self._remove(parent_inode, name, entry)
 
-    def _remove(self, parent_inode, name, entry):
+    def _remove(self, inode_p, name, entry):
         if self.get_row("SELECT COUNT(inode) FROM contents WHERE parent_inode=?",
                         (entry.st_ino,))[0] > 0:
             raise pyfuse3.FUSEError(errno.ENOTEMPTY)
 
         self.cursor.execute("DELETE FROM contents WHERE name=? AND parent_inode=?",
-                        (name, parent_inode))
+                        (name, inode_p))
 
         if entry.st_nlink == 1 and entry.st_ino not in self.inode_open_count:
             self.cursor.execute("DELETE FROM inodes WHERE id=?", (entry.st_ino,))
@@ -222,10 +224,13 @@ class Operations(pyfuse3.Operations):
         if flags != 0:
             raise FUSEError(errno.EINVAL)
 
-        entry_old = await self.lookup(parent_inode_old, name_old)
+        # Note: Despite the type annotation in _pyfuse3.py suggesting str,
+        # FUSE actually passes bytes. Cast to satisfy both runtime and type checker.
+        entry_old = await self.lookup(parent_inode_old, name_old if isinstance(name_old, bytes) else name_old.encode())
 
+        entry_new = None
         try:
-            entry_new = await self.lookup(parent_inode_new, name_new)
+            entry_new = await self.lookup(parent_inode_new, name_new if isinstance(name_new, bytes) else name_new.encode())
         except pyfuse3.FUSEError as exc:
             if exc.errno != errno.ENOENT:
                 raise
@@ -234,6 +239,7 @@ class Operations(pyfuse3.Operations):
             target_exists = True
 
         if target_exists:
+            assert entry_new is not None
             self._replace(parent_inode_old, name_old, parent_inode_new, name_new,
                           entry_old, entry_new)
         else:
@@ -241,7 +247,7 @@ class Operations(pyfuse3.Operations):
                                 "AND parent_inode=?", (name_new, parent_inode_new,
                                                        name_old, parent_inode_old))
 
-    def _replace(self, parent_inode_old, name_old, parent_inode_new, name_new,
+    def _replace(self, inode_p_old, name_old, inode_p_new, name_new,
                  entry_old, entry_new):
 
         if self.get_row("SELECT COUNT(inode) FROM contents WHERE parent_inode=?",
@@ -249,9 +255,9 @@ class Operations(pyfuse3.Operations):
             raise pyfuse3.FUSEError(errno.ENOTEMPTY)
 
         self.cursor.execute("UPDATE contents SET inode=? WHERE name=? AND parent_inode=?",
-                            (entry_old.st_ino, name_new, parent_inode_new))
+                            (entry_old.st_ino, name_new, inode_p_new))
         self.db.execute('DELETE FROM contents WHERE name=? AND parent_inode=?',
-                        (name_old, parent_inode_old))
+                        (name_old, inode_p_old))
 
         if entry_new.st_nlink == 1 and entry_new.st_ino not in self.inode_open_count:
             self.cursor.execute("DELETE FROM inodes WHERE id=?", (entry_new.st_ino,))
@@ -340,7 +346,7 @@ class Operations(pyfuse3.Operations):
         self.inode_open_count[inode] += 1
 
         # Use inodes as a file handles
-        return pyfuse3.FileInfo(fh=inode)
+        return pyfuse3.FileInfo(fh=pyfuse3.FileHandleT(inode))
 
     async def access(self, inode, mode, ctx):
         # Yeah, could be a function and has unused arguments
@@ -351,12 +357,12 @@ class Operations(pyfuse3.Operations):
         #pylint: disable=W0612
         entry = await self._create(parent_inode, name, mode, ctx)
         self.inode_open_count[entry.st_ino] += 1
-        return (pyfuse3.FileInfo(fh=entry.st_ino), entry)
+        return (pyfuse3.FileInfo(fh=pyfuse3.FileHandleT(entry.st_ino)), entry)
 
-    async def _create(self, parent_inode, name, mode, ctx, rdev=0, target=None):
-        if (await self.getattr(parent_inode)).st_nlink == 0:
+    async def _create(self, inode_p, name, mode, ctx, rdev=0, target=None):
+        if (await self.getattr(pyfuse3.InodeT(inode_p))).st_nlink == 0:
             log.warning('Attempted to create entry %s with unlinked parent %d',
-                        name, parent_inode)
+                        name, inode_p)
             raise FUSEError(errno.EINVAL)
 
         now_ns = int(time() * 1e9)
@@ -365,9 +371,10 @@ class Operations(pyfuse3.Operations):
                             (ctx.uid, ctx.gid, mode, now_ns, now_ns, now_ns, target, rdev))
 
         inode = self.cursor.lastrowid
+        assert inode is not None
         self.db.execute("INSERT INTO contents(name, inode, parent_inode) VALUES(?,?,?)",
-                        (name, inode, parent_inode))
-        return await self.getattr(inode)
+                        (name, inode, inode_p))
+        return await self.getattr(pyfuse3.InodeT(inode))
 
     async def read(self, fh, off, size):
         data = self.get_row('SELECT data FROM inodes WHERE id=?', (fh,))[0]
@@ -390,7 +397,7 @@ class Operations(pyfuse3.Operations):
 
         if self.inode_open_count[fh] == 0:
             del self.inode_open_count[fh]
-            if (await self.getattr(fh)).st_nlink == 0:
+            if (await self.getattr(pyfuse3.InodeT(fh))).st_nlink == 0:
                 self.cursor.execute("DELETE FROM inodes WHERE id=?", (fh,))
 
 class NoUniqueValueError(Exception):
