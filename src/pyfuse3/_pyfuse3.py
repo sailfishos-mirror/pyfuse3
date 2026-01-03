@@ -24,11 +24,11 @@ except (ImportError, PackageNotFoundError):
 
 # These types are specific instances of builtin types:
 FileHandleT = NewType("FileHandleT", int)
-FileNameT = NewType("FileNameT", bytes)
-FlagT = NewType("FlagT", int)
+FileNameT = bytes
+FlagT = int
 InodeT = NewType("InodeT", int)
-ModeT = NewType("ModeT", int)
-XAttrNameT = NewType("XAttrNameT", bytes)
+ModeT = int
+XAttrNameT = bytes
 
 if TYPE_CHECKING:
     # These types are defined elsewhere in the C code

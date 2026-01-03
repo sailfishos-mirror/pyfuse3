@@ -104,8 +104,7 @@ def setup(app):
     # Mangle NewTypes re-exported from pyfuse3._pyfuse3 so they appear to
     # come from their canonical location at the top of the package
     import pyfuse3
-    for name in ('FileHandleT', 'FileNameT', 'FlagT', 'InodeT', 'ModeT',
-                 'XAttrNameT'):
+    for name in ('FileHandleT', 'InodeT'):
         getattr(pyfuse3, name).__module__ = 'pyfuse3'
 
 
