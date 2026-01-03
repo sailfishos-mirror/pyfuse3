@@ -40,7 +40,7 @@ def get_mp():
         mp = multiprocessing.get_context('fork')
     else:
         # Older versions only support *fork* anyway
-        mp = multiprocessing
+        mp = multiprocessing  # type: ignore[assignment]
     if threading.active_count() != 1:
         raise RuntimeError("Multi-threaded test running is not supported")
 
@@ -243,10 +243,10 @@ class Fs(pyfuse3.Operations):
             await trio.sleep(0.1)
 
         elif value == b'forget_inode':
-            pyfuse3.invalidate_inode(self.hello_inode)
+            pyfuse3.invalidate_inode(pyfuse3.InodeT(self.hello_inode))
 
         elif value == b'store':
-            pyfuse3.notify_store(self.hello_inode, offset=0,
+            pyfuse3.notify_store(pyfuse3.InodeT(self.hello_inode), offset=0,
                                  data=self.hello_data)
 
         elif value == b'terminate':
