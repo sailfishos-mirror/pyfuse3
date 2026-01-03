@@ -14,21 +14,12 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-import os, sys
-basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# we need util/ so the sphinx_cython extension is found:
-sys.path.insert(0, os.path.join(basedir, 'util'))
-# we need src/ also, it is needed so llfuse can be imported to generate api docs:
-sys.path.insert(0, os.path.join(basedir, 'src'))
-
-#pylint: disable-all
-#@PydevCodeAnalysisIgnore
 
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx_cython']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 # Link to Python standard library
 intersphinx_mapping = {'python': ('https://docs.python.org/3/', None),
@@ -192,34 +183,3 @@ html_show_sourcelink = False
 htmlhelp_basename = 'pyfuse3doc'
 
 
-# -- Options for LaTeX output --------------------------------------------------
-
-# The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
-
-# The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('index', 'pyfuse3.tex', u'pyfuse3 Documentation',
-   u'Nikolaus Rath', 'manual'),
-]
-
-# The name of an image file (relative to this directory) to place at the top of
-# the title page.
-#latex_logo = None
-
-# For "manual" documents, if this is true, then toplevel headings are parts,
-# not chapters.
-#latex_use_parts = False
-
-# Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
-
-# Documents to append as an appendix to all manuals.
-#latex_appendices = []
-
-# If false, no module index is generated.
-#latex_use_modindex = True
